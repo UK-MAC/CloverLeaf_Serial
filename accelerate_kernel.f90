@@ -54,9 +54,7 @@ SUBROUTINE accelerate_kernel(x_min,x_max,y_min,y_max,dt,     &
   INTEGER               :: j,k
   REAL(KIND=8)          :: nodal_mass
 
-!$OMP PARALLEL
 
-!$OMP DO PRIVATE(nodal_mass)
   DO k=y_min,y_max+1
     DO j=x_min,x_max+1
 
@@ -70,9 +68,7 @@ SUBROUTINE accelerate_kernel(x_min,x_max,y_min,y_max,dt,     &
 
     ENDDO
   ENDDO
-!$OMP END DO
 
-!$OMP DO
   DO k=y_min,y_max+1
     DO j=x_min,x_max+1
 
@@ -80,9 +76,7 @@ SUBROUTINE accelerate_kernel(x_min,x_max,y_min,y_max,dt,     &
                                             +xarea(j  ,k-1)*(pressure(j  ,k-1)-pressure(j-1,k-1)))
     ENDDO
   ENDDO
-!$OMP END DO
 
-!$OMP DO
   DO k=y_min,y_max+1
     DO j=x_min,x_max+1
 
@@ -91,9 +85,7 @@ SUBROUTINE accelerate_kernel(x_min,x_max,y_min,y_max,dt,     &
 
     ENDDO
   ENDDO
-!$OMP END DO
 
-!$OMP DO
   DO k=y_min,y_max+1
     DO j=x_min,x_max+1
 
@@ -102,9 +94,7 @@ SUBROUTINE accelerate_kernel(x_min,x_max,y_min,y_max,dt,     &
 
     ENDDO
   ENDDO
-!$OMP END DO
 
-!$OMP DO
   DO k=y_min,y_max+1
     DO j=x_min,x_max+1
 
@@ -113,9 +103,7 @@ SUBROUTINE accelerate_kernel(x_min,x_max,y_min,y_max,dt,     &
 
     ENDDO
   ENDDO
-!$OMP END DO
 
-!$OMP END PARALLEL
 
 END SUBROUTINE accelerate_kernel
 

@@ -35,7 +35,6 @@ SUBROUTINE field_summary()
   REAL(KIND=8) :: vol,mass,ie,ke,press
   REAL(KIND=8) :: qa_diff
 
-!$ INTEGER :: OMP_GET_THREAD_NUM
 
   INTEGER      :: c
 
@@ -73,16 +72,13 @@ SUBROUTINE field_summary()
   CALL clover_sum(ke)
 
   IF(parallel%boss) THEN
-!$  IF(OMP_GET_THREAD_NUM().EQ.0) THEN
       WRITE(g_out,'(a6,i7,7e16.4)')' step:',step,vol,mass,mass/vol,press/vol,ie,ke,ie+ke
       WRITE(g_out,*)
-!$  ENDIF
    ENDIF
 
   !Check if this is the final call and if it is a test problem, check the result.
   IF(complete) THEN
     IF(parallel%boss) THEN
-!$    IF(OMP_GET_THREAD_NUM().EQ.0) THEN
         IF(test_problem.EQ.1) THEN
           qa_diff=ABS((100.0_8*(ke/1.82280367574564_8))-100.0_8)
           WRITE(*,*)"Test problem 1 is within",qa_diff,"% of the expected solution"
@@ -95,7 +91,6 @@ SUBROUTINE field_summary()
             WRITE(g_out,*)"This is test is considered NOT PASSED"
           ENDIF
         ENDIF
-!$    ENDIF
     ENDIF
   ENDIF
 

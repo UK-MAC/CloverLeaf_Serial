@@ -48,7 +48,6 @@ SUBROUTINE timestep()
 
   INTEGER :: fields(NUM_FIELDS)
 
-!$ INTEGER :: OMP_GET_THREAD_NUM
 
   dt    = g_big
   small=0
@@ -91,12 +90,10 @@ SUBROUTINE timestep()
   IF(dt.LT.dtmin) small=1
 
   IF (parallel%boss) THEN
-!$  IF(OMP_GET_THREAD_NUM().EQ.0) THEN
       WRITE(g_out,"(' Step ', i7,' time ', f11.7,' control ',a11,' timestep  ',1pe9.2,i8,',',i8,' x ',1pe9.2,' y ',1pe9.2)") &
                       step,time,dt_control,dt,jdt,kdt,x_pos,y_pos
       WRITE(0,"(' Step ', i7,' time ', f11.7,' control ',a11,' timestep  ',1pe9.2,i8,',',i8,' x ',1pe9.2,' y ',1pe9.2)") &
                       step,time,dt_control,dt,jdt,kdt,x_pos,y_pos
-!$  ENDIF
   ENDIF
 
   IF(small.EQ.1) THEN

@@ -42,9 +42,7 @@ void ideal_gas_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   double sound_speed_squared,v,pressurebyenergy,pressurebyvolume;
   
-#pragma omp parallel private(j)
  {
-#pragma omp for private(v,pressurebyenergy,pressurebyvolume,sound_speed_squared)
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {								 
