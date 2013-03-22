@@ -488,15 +488,27 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
 
   ! Pack real data into buffers
   IF(parallel%task.EQ.chunks(chunk)%task) THEN
+    size=(1+(chunks(chunk)%field%y_max+y_inc+depth)-(chunks(chunk)%field%y_min-depth))*depth
     IF(chunks(chunk)%chunk_neighbours(chunk_left).NE.external_face) THEN
-      size=(1+(chunks(chunk)%field%y_max+y_inc+depth)-(chunks(chunk)%field%y_min-depth))*depth
       DO k=chunks(chunk)%field%y_min-depth,chunks(chunk)%field%y_max+y_inc+depth
         DO j=1,depth
           index=j+(k+depth-1)*depth
           left_snd_buffer(index)=field(chunks(chunk)%field%x_min+x_inc-1+j,k)
         ENDDO
       ENDDO
-      tag=4*(chunk)+1 ! 4 because we have 4 faces, 1 because it is leaving the left face
+    ENDIF
+    IF(chunks(chunk)%chunk_neighbours(chunk_right).NE.external_face) THEN
+      DO k=chunks(chunk)%field%y_min-depth,chunks(chunk)%field%y_max+y_inc+depth
+        DO j=1,depth
+          index=j+(k+depth-1)*depth
+          right_snd_buffer(index)=field(chunks(chunk)%field%x_max+1-j,k)
+        ENDDO
+      ENDDO
+    ENDIF
+
+    ! Send/receive the data
+    IF(chunks(chunk)%chunk_neighbours(chunk_left).NE.external_face) THEN
+       tag=4*(chunk)+1 ! 4 because we have 4 faces, 1 because it is leaving the left face
       receiver=chunks(chunks(chunk)%chunk_neighbours(chunk_left))%task
       tag=4*(chunks(chunk)%chunk_neighbours(chunk_left))+2 ! 4 because we have 4 faces, 1 because it is coming from the right face of the left neighbour
       sender=chunks(chunks(chunk)%chunk_neighbours(chunk_left))%task
@@ -504,13 +516,6 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
     ENDIF
 
     IF(chunks(chunk)%chunk_neighbours(chunk_right).NE.external_face) THEN
-      size=(1+(chunks(chunk)%field%y_max+y_inc+depth)-(chunks(chunk)%field%y_min-depth))*depth
-      DO k=chunks(chunk)%field%y_min-depth,chunks(chunk)%field%y_max+y_inc+depth
-        DO j=1,depth
-          index=j+(k+depth-1)*depth
-          right_snd_buffer(index)=field(chunks(chunk)%field%x_max+1-j,k)
-        ENDDO
-      ENDDO
       tag=4*chunk+2 ! 4 because we have 4 faces, 2 because it is leaving the right face
       receiver=chunks(chunks(chunk)%chunk_neighbours(chunk_right))%task
       tag=4*(chunks(chunk)%chunk_neighbours(chunk_right))+1 ! 4 because we have 4 faces, 1 because it is coming from the left face of the right neighbour
@@ -520,7 +525,6 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
   ENDIF
 
   ! Wait for the messages
-
 
   ! Unpack buffers in halo cells
   IF(parallel%task.EQ.chunks(chunk)%task) THEN
@@ -546,14 +550,26 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
   message_count=0
 
   IF(parallel%task.EQ.chunks(chunk)%task) THEN
+    size=(1+(chunks(chunk)%field%x_max+x_inc+depth)-(chunks(chunk)%field%x_min-depth))*depth
     IF(chunks(chunk)%chunk_neighbours(chunk_bottom).NE.external_face) THEN
-      size=(1+(chunks(chunk)%field%x_max+x_inc+depth)-(chunks(chunk)%field%x_min-depth))*depth
       DO k=1,depth
         DO j=chunks(chunk)%field%x_min-depth,chunks(chunk)%field%x_max+x_inc+depth
           index=j+depth+(k-1)*(chunks(chunk)%field%x_max+x_inc+(2*depth))
           bottom_snd_buffer(index)=field(j,chunks(chunk)%field%y_min+y_inc-1+k)
         ENDDO
       ENDDO
+    ENDIF
+    IF(chunks(chunk)%chunk_neighbours(chunk_top).NE.external_face) THEN
+      DO k=1,depth
+        DO j=chunks(chunk)%field%x_min-depth,chunks(chunk)%field%x_max+x_inc+depth
+          index=j+depth+(k-1)*(chunks(chunk)%field%x_max+x_inc+(2*depth))
+          top_snd_buffer(index)=field(j,chunks(chunk)%field%y_max+1-k)
+        ENDDO
+      ENDDO
+    ENDIF
+
+    ! Send/receive the data
+    IF(chunks(chunk)%chunk_neighbours(chunk_bottom).NE.external_face) THEN
       tag=4*(chunk)+3 ! 4 because we have 4 faces, 3 because it is leaving the bottom face
       receiver=chunks(chunks(chunk)%chunk_neighbours(chunk_bottom))%task
       tag=4*(chunks(chunk)%chunk_neighbours(chunk_bottom))+4 ! 4 because we have 4 faces, 1 because it is coming from the top face of the bottom neighbour
@@ -562,19 +578,13 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
     ENDIF
 
     IF(chunks(chunk)%chunk_neighbours(chunk_top).NE.external_face) THEN
-      size=(1+(chunks(chunk)%field%x_max+x_inc+depth)-(chunks(chunk)%field%x_min-depth))*depth
-      DO k=1,depth
-        DO j=chunks(chunk)%field%x_min-depth,chunks(chunk)%field%x_max+x_inc+depth
-          index=j+depth+(k-1)*(chunks(chunk)%field%x_max+x_inc+(2*depth))
-          top_snd_buffer(index)=field(j,chunks(chunk)%field%y_max+1-k)
-        ENDDO
-      ENDDO
       tag=4*(chunk)+4 ! 4 because we have 4 faces, 4 because it is leaving the top face
       receiver=chunks(chunks(chunk)%chunk_neighbours(chunk_top))%task
       tag=4*(chunks(chunk)%chunk_neighbours(chunk_top))+3 ! 4 because we have 4 faces, 4 because it is coming from the left face of the top neighbour
       sender=chunks(chunks(chunk)%chunk_neighbours(chunk_top))%task
       message_count=message_count+2
     ENDIF
+
   ENDIF
 
   ! Wait for the messages
@@ -636,6 +646,38 @@ SUBROUTINE clover_min(value)
   value=minimum
 
 END SUBROUTINE clover_min
+
+SUBROUTINE clover_max(value)
+
+  IMPLICIT NONE
+
+  REAL(KIND=8) :: value
+
+  REAL(KIND=8) :: maximum
+
+  INTEGER :: err
+
+  maximum=value
+
+
+  value=maximum
+
+END SUBROUTINE clover_max
+
+SUBROUTINE clover_allgather(value,values)
+
+  IMPLICIT NONE
+
+  REAL(KIND=8) :: value
+
+  REAL(KIND=8) :: values(parallel%max_task)
+
+  INTEGER :: err
+
+  values(1)=value ! Just to ensure it will work in serial
+
+
+END SUBROUTINE clover_allgather
 
 SUBROUTINE clover_check_error(error)
 

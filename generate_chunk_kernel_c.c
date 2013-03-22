@@ -63,10 +63,8 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   int j,k,jt,kt;
 
-#pragma omp parallel private(j)
  {
   /* State 1 is always the background state */
-#pragma omp for
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
@@ -74,7 +72,6 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
-#pragma omp for private(j)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
@@ -82,7 +79,6 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
    }
   }
 
-#pragma omp for private(j)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
@@ -90,7 +86,6 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
    }
   }
 
-#pragma omp for private(j)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
@@ -102,7 +97,6 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
 ! Could the velocity setting be thread unsafe?
 
-#pragma omp for private(radius)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {

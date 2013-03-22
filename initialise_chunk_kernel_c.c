@@ -54,57 +54,47 @@ void initialise_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   int j,k;
 
-#pragma omp parallel
  {
-#pragma omp for private(j)
 #pragma ivdep
   for (j=x_min-2;j<=x_max+3;j++) {
     vertexx[FTNREF1D(j  ,x_max+4,x_min-2)]=min_x+d_x*(double)(j-x_min);
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (j=x_min-2;j<=x_max+3;j++) {
     vertexdx[FTNREF1D(j  ,x_max+4,x_min-2)]=d_x;
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (k=y_min-2;k<=y_max+3;k++) {
     vertexy(k)=min_y+d_y*(double)(k-y_min);
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (k=y_min-2;k<=y_max+3;k++) {
     vertexdy(k)=d_y:
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (j=x_min-2;j<=x_max+2;j++) {
     cellx(j)=0.5*(vertexx(j)+vertexx(j+1));
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (j=x_min-2;j<=x_max+2;j++) {
     celldx(j)=d_x;
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (k=y_min-2;k<=y_max+2;k++) {
     celly(k)=0.5*(vertexy(k)+vertexy(k+1));
   }
 
-#pragma omp for private(j)
 #pragma ivdep
   for (k=y_min-2;k<=y_max+2;k++) {
      celldy(k)=d_y;
   }
 
-#pragma omp for private(j)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
@@ -112,7 +102,6 @@ void initialise_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
-#pragma omp for private(j)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
@@ -120,7 +109,6 @@ void initialise_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
-#pragma omp for private(j)
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
