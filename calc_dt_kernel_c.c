@@ -83,12 +83,12 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   double div,dsx,dsy,dtut,dtvt,dtct,dtdivt,cc,dv1,dv2,jk_control;
 
- {
-
   small=0;
 
   dt_min_val = g_big;
   jk_control=1.1;
+
+ {
 
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
@@ -97,8 +97,8 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
        dsx=celldx[FTNREF1D(j,x_min-2)];
        dsy=celldy[FTNREF1D(k,y_min-2)];
 
-       cc=soundspeed[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]*soundspeed[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)];
-       cc=cc+2.0*viscosity[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]/density0[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)];
+       cc=soundspeed[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]*soundspeed[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)];
+       cc=cc+2.0*viscosity[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]/density0[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)];
        cc=MAX(sqrt(cc),g_small);
 
        dtct=dtc_safe*MIN(dsx,dsy)/cc;
@@ -110,16 +110,16 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
        div=div+dv2-dv1;
 
-       dtut=dtu_safe*2.0*volume[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]/MAX(fabs(dv1),MAX(fabs(dv2),g_small*volume[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]));
+       dtut=dtu_safe*2.0*volume[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]/MAX(fabs(dv1),MAX(fabs(dv2),g_small*volume[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]));
 
-       dv1=(yvel0[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]+yvel0[FTNREF2D(j  ,k+1,x_max+5,x_min-2,y_min-2)])*yarea[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)];
-       dv2=(yvel0[FTNREF2D(j+1,k  ,x_max+5,x_min-2,y_min-2)]+yvel0[FTNREF2D(j+1,k+1,x_max+5,x_min-2,y_min-2)])*yarea[FTNREF2D(j+1,k  ,x_max+4,x_min-2,y_min-2)];
+       dv1=(yvel0[FTNREF2D(j,k,x_max+5,x_min-2,y_min-2)]+yvel0[FTNREF2D(j+1,k,x_max+5,x_min-2,y_min-2)])*yarea[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)];
+       dv2=(yvel0[FTNREF2D(j,k+1,x_max+5,x_min-2,y_min-2)]+yvel0[FTNREF2D(j+1,k+1,x_max+5,x_min-2,y_min-2)])*yarea[FTNREF2D(j,k+1,x_max+4,x_min-2,y_min-2)];
 
        div=div+dv2-dv1;
 
-       dtvt=dtv_safe*2.0*volume[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]/MAX(fabs(dv1),MAX(fabs(dv2),g_small*volume[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]));
+       dtvt=dtv_safe*2.0*volume[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]/MAX(fabs(dv1),MAX(fabs(dv2),g_small*volume[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]));
 
-       div=div/(2.0*volume[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]);
+       div=div/(2.0*volume[FTNREF2D(j,k,x_max+4,x_min-2,y_min-2)]);
 
        if(div < -g_small) {
          dtdivt=dtdiv_safe*(-1.0/div);
@@ -128,7 +128,7 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
          dtdivt=g_big;
        }
 
-       dt_min[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=MIN(dtct,MIN(dtut,MIN(dtvt,dtdivt)));
+       dt_min[FTNREF2D(j,k,x_max+5,x_min-2,y_min-2)]=MIN(dtct,MIN(dtut,MIN(dtvt,dtdivt)));
 
     }
   }
@@ -136,7 +136,7 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
-      if(dt_min[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)] < dt_min_val) dt_min_val=dt_min[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)];
+      if(dt_min[FTNREF2D(j,k,x_max+5,x_min-2,y_min-2)] < dt_min_val) dt_min_val=dt_min[FTNREF2D(j,k,x_max+5,x_min-2,y_min-2)];
     }
   }
 

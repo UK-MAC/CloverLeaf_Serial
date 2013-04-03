@@ -90,17 +90,20 @@ CONTAINS
 
 
   ! Update values in external halo cells based on depth and fields requested
+  ! Even though half of these loops look the wrong way around, it should be noted
+  ! that depth is either 1 or 2 so that it is more efficient to always thread
+  ! loop along the mesh edge.
   IF(fields(FIELD_DENSITY0).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           density0(j,1-k)=density0(j,0+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           density0(j,y_max+k)=density0(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -123,15 +126,15 @@ CONTAINS
 
   IF(fields(FIELD_DENSITY1).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           density1(j,1-k)=density1(j,0+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           density1(j,y_max+k)=density1(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -154,15 +157,15 @@ CONTAINS
 
   IF(fields(FIELD_ENERGY0).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           energy0(j,1-k)=energy0(j,0+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           energy0(j,y_max+k)=energy0(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -185,15 +188,15 @@ CONTAINS
 
   IF(fields(FIELD_ENERGY1).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           energy1(j,1-k)=energy1(j,0+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           energy1(j,y_max+k)=energy1(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -216,15 +219,15 @@ CONTAINS
 
   IF(fields(FIELD_PRESSURE).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           pressure(j,1-k)=pressure(j,0+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           pressure(j,y_max+k)=pressure(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -247,15 +250,15 @@ CONTAINS
 
   IF(fields(FIELD_VISCOSITY).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           viscosity(j,1-k)=viscosity(j,0+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           viscosity(j,y_max+k)=viscosity(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -278,15 +281,15 @@ CONTAINS
 
   IF(fields(FIELD_XVEL0).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           xvel0(j,1-k)=xvel0(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           xvel0(j,y_max+1+k)=xvel0(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -309,15 +312,15 @@ CONTAINS
 
   IF(fields(FIELD_XVEL1).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           xvel1(j,1-k)=xvel1(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           xvel1(j,y_max+1+k)=xvel1(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -340,15 +343,15 @@ CONTAINS
 
   IF(fields(FIELD_YVEL0).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           yvel0(j,1-k)=-yvel0(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           yvel0(j,y_max+1+k)=-yvel0(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -371,15 +374,15 @@ CONTAINS
 
   IF(fields(FIELD_YVEL1).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           yvel1(j,1-k)=-yvel1(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           yvel1(j,y_max+1+k)=-yvel1(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -402,15 +405,15 @@ CONTAINS
 
   IF(fields(FIELD_VOL_FLUX_X).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           vol_flux_x(j,1-k)=vol_flux_x(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           vol_flux_x(j,y_max+k)=vol_flux_x(j,y_max-k)
         ENDDO
       ENDDO
@@ -433,15 +436,15 @@ CONTAINS
 
   IF(fields(FIELD_MASS_FLUX_X).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           mass_flux_x(j,1-k)=mass_flux_x(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+1+depth
+      DO j=x_min-depth,x_max+1+depth
+        DO k=1,depth
           mass_flux_x(j,y_max+k)=mass_flux_x(j,y_max-k)
         ENDDO
       ENDDO
@@ -464,15 +467,15 @@ CONTAINS
 
   IF(fields(FIELD_VOL_FLUX_Y).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           vol_flux_y(j,1-k)=-vol_flux_y(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           vol_flux_y(j,y_max+k+1)=-vol_flux_y(j,y_max+1-k)
         ENDDO
       ENDDO
@@ -495,15 +498,15 @@ CONTAINS
 
   IF(fields(FIELD_MASS_FLUX_Y).EQ.1) THEN
     IF(chunk_neighbours(CHUNK_BOTTOM).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           mass_flux_y(j,1-k)=-mass_flux_y(j,1+k)
         ENDDO
       ENDDO
     ENDIF
     IF(chunk_neighbours(CHUNK_TOP).EQ.EXTERNAL_FACE) THEN
-      DO k=1,depth
-        DO j=x_min-depth,x_max+depth
+      DO j=x_min-depth,x_max+depth
+        DO k=1,depth
           mass_flux_y(j,y_max+k+1)=-mass_flux_y(j,y_max+1-k)
         ENDDO
       ENDDO
