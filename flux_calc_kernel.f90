@@ -49,14 +49,14 @@ SUBROUTINE flux_calc_kernel(x_min,x_max,y_min,y_max,dt,              &
 
   DO k=y_min,y_max
     DO j=x_min,x_max+1 
-      vol_flux_x(j,k)=0.25*dt*xarea(j,k)                  &
+      vol_flux_x(j,k)=0.25_8*dt*xarea(j,k)                  &
                      *(xvel0(j,k)+xvel0(j,k+1)+xvel1(j,k)+xvel1(j,k+1))
     ENDDO
   ENDDO
 
   DO k=y_min,y_max+1
     DO j=x_min,x_max
-      vol_flux_y(j,k)=0.25*dt*yarea(j,k)                  &
+      vol_flux_y(j,k)=0.25_8*dt*yarea(j,k)                  &
                      *(yvel0(j,k)+yvel0(j+1,k)+yvel1(j,k)+yvel1(j+1,k))
     ENDDO
   ENDDO
