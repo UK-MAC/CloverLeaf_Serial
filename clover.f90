@@ -504,8 +504,8 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
                                      chunks(chunk)%field%y_min,chunks(chunk)%field%y_max, &
                                      chunks(chunk)%chunk_neighbours(chunk_left),          &
                                      chunks(chunk)%chunk_neighbours(chunk_right),         &
-                                     external_face,size,                                  &
-                                     x_inc,y_inc,depth,                                   &
+                                     external_face,                                       &
+                                     x_inc,y_inc,depth,size,                              &
                                      field,left_snd_buffer,right_snd_buffer)
     ENDIF
 
@@ -570,7 +570,7 @@ SUBROUTINE clover_exchange_message(chunk,field,                            &
                                      chunks(chunk)%chunk_neighbours(chunk_bottom),        &
                                      chunks(chunk)%chunk_neighbours(chunk_top),           &
                                      external_face,                                       &
-                                     x_inc,y_inc,depth,                                   &
+                                     x_inc,y_inc,depth,size,                              &
                                      field,bottom_snd_buffer,top_snd_buffer)
     ENDIF
 
