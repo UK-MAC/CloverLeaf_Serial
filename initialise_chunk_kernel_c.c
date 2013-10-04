@@ -72,7 +72,7 @@ void initialise_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
 #pragma ivdep
   for (k=y_min-2;k<=y_max+3;k++) {
-    vertexdy[FTNREF1D(k,x_min-2)]=d_y;
+    vertexdy[FTNREF1D(k,y_min-2)]=d_y;
   }
 
 #pragma ivdep
