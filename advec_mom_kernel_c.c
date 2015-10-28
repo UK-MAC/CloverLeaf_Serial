@@ -30,8 +30,7 @@
 #include <math.h>
 
 void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
-                      double *xvel1,
-                      double *yvel1,
+                      double *vel1,
                       double *mass_flux_x,
                       double *vol_flux_x,
                       double *mass_flux_y,
@@ -41,7 +40,6 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                       double *node_flux,
                       double *node_mass_post,
                       double *node_mass_pre,
-                      double *advec_vel,
                       double *mom_flux,
                       double *pre_vol,
                       double *post_vol,
@@ -65,18 +63,15 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
   double sigma,wind,width;
   double vdiffuw,vdiffdw,auw,adw,limiter;
 
-  double *vel1;
+  double advec_vel_s;
 
-  if(which_vel==1){
-    vel1=xvel1;
-  } else{
-    vel1=yvel1;
-  }
 
   mom_sweep=direction+2*(sweep_number-1);
   
- {
+
+
   if(mom_sweep==1){
+
     for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min-2;j<=x_max+2;j++) {
@@ -89,6 +84,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
       }
     }
   } else if(mom_sweep==2){
+
     for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min-2;j<=x_max+2;j++) {
@@ -101,6 +97,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
       }
     }
   } else if(mom_sweep==3){
+
     for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min-2;j<=x_max+2;j++) {
@@ -111,6 +108,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
       }
     }
   } else if(mom_sweep==4){
+
     for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min-2;j<=x_max+2;j++) {
@@ -123,6 +121,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
   }
 
   if(direction==1) {
+
     for (k=y_min;k<=y_max+1;k++) {
 #pragma ivdep
       for (j=x_min-2;j<=x_max+2;j++) {
@@ -133,6 +132,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                                                              +mass_flux_x[FTNREF2D(j+1,k  ,x_max+5,x_min-2,y_min-2)]);
       }
     }
+
     for (k=y_min;k<=y_max+1;k++) {
 #pragma ivdep
       for (j=x_min-1;j<=x_max+2;j++) {
@@ -147,6 +147,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                                                                   *post_vol[FTNREF2D(j-1,k  ,x_max+5,x_min-2,y_min-2)]);
       }
     }
+
     for (k=y_min;k<=y_max+1;k++) {
 #pragma ivdep
       for (j=x_min-1;j<=x_max+2;j++) {
@@ -154,6 +155,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                           -node_flux[FTNREF2D(j-1,k  ,x_max+5,x_min-2,y_min-2)]+node_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)];
       }
     }
+
     for (k=y_min;k<=y_max+1;k++) {
       for (j=x_min-1;j<=x_max+1;j++) {
         if(node_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]<0.0){
@@ -180,11 +182,12 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
           if(vdiffdw<=0.0) wind=-1.0;
           limiter=wind*MIN(width*((2.0-sigma)*adw/width+(1.0+sigma)*auw/celldx[FTNREF1D(dif,x_min-2)])/6.0,MIN(auw,adw));
         }
-        advec_vel[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=vel1[FTNREF2D(donor,k  ,x_max+5,x_min-2,y_min-2)]+(1.0-sigma)*limiter;
-        mom_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=advec_vel[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]
+        advec_vel_s=vel1[FTNREF2D(donor,k  ,x_max+5,x_min-2,y_min-2)]+(1.0-sigma)*limiter;
+        mom_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=advec_vel_s
                                                            *node_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)];
       }
     }
+
 
     for (k=y_min;k<=y_max+1;k++) {
 #pragma ivdep
@@ -198,6 +201,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
   else if(direction==2){
+
     for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max+1;j++) {
@@ -208,6 +212,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                                                              +mass_flux_y[FTNREF2D(j  ,k+1,x_max+4,x_min-2,y_min-2)]);
       }
     }
+
     for (k=y_min-1;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max+1;j++) {
@@ -222,6 +227,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                                                                   *post_vol[FTNREF2D(j-1,k  ,x_max+5,x_min-2,y_min-2)]);
       }
     }
+
     for (k=y_min-1;k<=y_max+2;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max+1;j++) {
@@ -229,6 +235,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
                           -node_flux[FTNREF2D(j  ,k-1,x_max+5,x_min-2,y_min-2)]+node_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)];
       }
     }
+
     for (k=y_min-1;k<=y_max+1;k++) {
       for (j=x_min;j<=x_max+1;j++) {
         if(node_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]<0.0){
@@ -255,11 +262,12 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
           if(vdiffdw<=0.0) wind=-1.0;
           limiter=wind*MIN(width*((2.0-sigma)*adw/width+(1.0+sigma)*auw/celldy[FTNREF1D(dif,y_min-2)])/6.0,MIN(auw,adw));
         }
-        advec_vel[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=vel1[FTNREF2D(j  ,donor,x_max+5,x_min-2,y_min-2)]+(1.0-sigma)*limiter;
-        mom_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=advec_vel[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]
+        advec_vel_s=vel1[FTNREF2D(j  ,donor,x_max+5,x_min-2,y_min-2)]+(1.0-sigma)*limiter;
+        mom_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=advec_vel_s
                                                            *node_flux[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)];
       }
     }
+
     for (k=y_min;k<=y_max+1;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max+1;j++) {
@@ -273,7 +281,7 @@ void advec_mom_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   }
 
- }
+
 
 }
 

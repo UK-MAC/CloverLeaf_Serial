@@ -18,7 +18,7 @@
 /**
  *  @brief C timestep kernel
  *  @author Wayne Gaudin
- *  @details alculates the minimum timestep on the mesh chunk based on the CFL
+ *  @details calculates the minimum timestep on the mesh chunk based on the CFL
  *  condition, the velocity gradient and the velocity divergence. A safety
  *  factor is used to ensure numerical stability.
  */
@@ -88,7 +88,9 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
   dt_min_val = g_big;
   jk_control=1.1;
 
- {
+
+
+
 
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
@@ -133,6 +135,7 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
+
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
@@ -140,7 +143,7 @@ void calc_dt_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
- }
+
 
   // Extract the mimimum timestep information
   dtl_control=10.01*(jk_control-(int)(jk_control));

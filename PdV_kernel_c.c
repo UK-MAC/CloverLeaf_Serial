@@ -57,10 +57,12 @@ void pdv_kernel_c_(int *prdct,
   int j,k;
   double recip_volume,energy_change,min_cell_volume,right_flux,left_flux,top_flux,bottom_flux,total_flux;
   
- {
+
+
 
   if(predict==0) {
     
+
     for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max;j++) {
@@ -113,6 +115,7 @@ void pdv_kernel_c_(int *prdct,
     }
   }
   else{
+
     for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max;j++) {
@@ -166,7 +169,7 @@ void pdv_kernel_c_(int *prdct,
 
   }
 
- }
+
 
 }
 

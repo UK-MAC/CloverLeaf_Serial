@@ -64,7 +64,9 @@ void field_summary_kernel_c_(int *xmin,
   ke=0.0;;
   press=0.0;
 
- {
+
+
+
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
@@ -85,7 +87,7 @@ void field_summary_kernel_c_(int *xmin,
     }
   }
 
- }
+
 
  *vl=vol;
  *mss=mass;

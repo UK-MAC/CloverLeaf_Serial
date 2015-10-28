@@ -18,7 +18,8 @@
 /**
  *  @brief C mesh chunk generator
  *  @author Wayne Gaudin
- *  @details Still just a stub.
+ *  @details Generates the field data on a mesh chunk based on the user specified
+ *  input for the states.
  *   
  *  Note that state one is always used as the background state, which is then
  *  overwritten by further state definitions.
@@ -68,14 +69,17 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   int j,k,jt,kt;
 
- {
+
+
   /* State 1 is always the background state */
+
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
       energy0[FTNREF2D(j  ,k  ,x_max+4,x_min-2,y_min-2)]=state_energy[FTNREF1D(1,1)];
     }
   }
+
 
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
@@ -84,12 +88,14 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
    }
   }
 
+
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
     for (j=x_min-2;j<=x_max+2;j++) {
       xvel0[FTNREF2D(j  ,k  ,x_max+5,x_min-2,y_min-2)]=state_xvel[FTNREF1D(1,1)];
    }
   }
+
 
   for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
@@ -103,6 +109,7 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 /* Could the velocity setting be thread unsafe? */
     x_cent=state_xmin[FTNREF1D(state,1)];
     y_cent=state_ymin[FTNREF1D(state,1)];
+
 
     for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
@@ -150,6 +157,6 @@ void generate_chunk_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   }
 
- }
+
 
 }

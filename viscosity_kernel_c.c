@@ -46,7 +46,9 @@ void viscosity_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
   double ugrad,vgrad,grad2,pgradx,pgrady,pgradx2,pgrady2,grad
         ,ygrad,pgrad,xgrad,div,strain2,limiter;
 	
- {
+
+
+
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
@@ -103,6 +105,6 @@ void viscosity_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
- }
+
 
 }

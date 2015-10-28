@@ -69,21 +69,22 @@ OMP_CRAY      =
 OMP_PGI       = -mp=nonuma
 OMP_PATHSCALE = -mp
 OMP_XL        = -qsmp=omp -qthreaded
-OMP=$(OMP_$(COMPILER))
+OMP=
+# Remove OpenMP flags
+# OMP=$(OMP_$(COMPILER))
 
 FLAGS_INTEL     = -O3 -no-prec-div
 FLAGS_SUN       = -fast -xipo=2 -Xlistv4
 FLAGS_GNU       = -O3 -march=native -funroll-loops
 FLAGS_CRAY      = -em -ra -h acc_model=fast_addr:no_deep_copy:auto_async_all
-FLAGS_PGI       = -fastsse -gopt -Mipa=fast -Mlist
+FLAGS_PGI       = -fastsse -Mipa=fast -Mlist
 FLAGS_PATHSCALE = -O3
-FLAGS_XL       = -O5 -qipa=partition=large -g -qfullpath -Q -qsigtrap -qextname=flush:ideal_gas_kernel_c:viscosity_kernel_c:pdv_kernel_c:revert_kernel_c:accelerate_kernel_c:flux_calc_kernel_c:advec_cell_kernel_c:advec_mom_kernel_c:reset_field_kernel_c:timer_c:unpack_top_bottom_buffers_c:pack_top_bottom_buffers_c:unpack_left_right_buffers_c:pack_left_right_buffers_c:field_summary_kernel_c:update_halo_kernel_c:generate_chunk_kernel_c:initialise_chunk_kernel_c:calc_dt_kernel_c -qlistopt -qattr=full -qlist -qreport -qxref=full -qsource -qsuppress=1506-224:1500-036
-FLAGS_          = -O3
+FLAGS_XL        = -O5 -qipa=partition=large -g -qfullpath -Q -qsigtrap -qextname=flush:ideal_gas_kernel_c:viscosity_kernel_c:pdv_kernel_c:revert_kernel_c:accelerate_kernel_c:flux_calc_kernel_c:advec_cell_kernel_c:advec_mom_kernel_c:reset_field_kernel_c:timer_c:unpack_top_bottom_buffers_c:pack_top_bottom_buffers_c:unpack_left_right_buffers_c:pack_left_right_buffers_c:field_summary_kernel_c:update_halo_kernel_c:generate_chunk_kernel_c:initialise_chunk_kernel_c:calc_dt_kernel_c:clover_unpack_message_bottom_c:clover_pack_message_bottom_c:clover_unpack_message_top_c:clover_pack_message_top_c:clover_unpack_message_right_c:clover_pack_message_right_c:clover_unpack_message_left_c:clover_pack_message_left_c -qlistopt -qattr=full -qlist -qreport -qxref=full -qsource -qsuppress=1506-224:1500-036FLAGS_          = -O3
 CFLAGS_INTEL     = -O3 -no-prec-div -restrict -fno-alias
 CFLAGS_SUN       = -fast -xipo=2
 CFLAGS_GNU       = -O3 -march=native -funroll-loops
 CFLAGS_CRAY      = -em -h list=a
-CFLAGS_PGI       = -fastsse -gopt -Mipa=fast -Mlist
+CFLAGS_PGI       = -fastsse -Mipa=fast -Mlist
 CFLAGS_PATHSCALE = -O3
 CFLAGS_XL       = -O5 -qipa=partition=large -g -qfullpath -Q -qlistopt -qattr=full -qlist -qreport -qxref=full -qsource -qsuppress=1506-224:1500-036 -qsrcmsg
 CFLAGS_          = -O3
@@ -117,10 +118,37 @@ ifdef IEEE
   I3E=$(I3E_$(COMPILER))
 endif
 
+
+MPI_COMPILER_INTEL = ifort
+C_MPI_COMPILER_INTEL = icc
+
+MPI_COMPILER_SUN = f95
+C_MPI_COMPILER_SUN = CC
+
+MPI_COMPILER_GNU = gfortran
+C_MPI_COMPILER_GNU = gcc
+
+MPI_COMPILER_CRAY = ftn
+C_MPI_COMPILER_CRAY = cc
+
+MPI_COMPILER_PGI = pgfortran
+C_MPI_COMPILER_PGI = pgcc
+
+MPI_COMPILER_PATHSCALE = pathf95
+C_MPI_COMPILER_PATHSCALE = pathcc
+
+MPI_COMPILER_XL = xlf
+C_MPI_COMPILER_XL = xlc
+
+MPI_COMPILER_ = FC
+C_MPI_COMPILER_ = CC
+
+
 FLAGS=$(FLAGS_$(COMPILER)) $(OMP) $(I3E) $(OPTIONS)
 CFLAGS=$(CFLAGS_$(COMPILER)) $(OMP) $(I3E) $(C_OPTIONS) -c
-MPI_COMPILER=mpif90
-C_MPI_COMPILER=mpicc
+
+MPI_COMPILER=$(MPI_COMPILER_$(COMPILER))
+C_MPI_COMPILER=$(C_MPI_COMPILER_$(COMPILER))
 
 clover_leaf: c_lover *.f90 Makefile
 	$(MPI_COMPILER) $(FLAGS)	\
@@ -135,6 +163,8 @@ clover_leaf: c_lover *.f90 Makefile
 	initialise_chunk_kernel.f90	\
 	initialise_chunk.f90		\
 	build_field.f90			\
+	update_tile_halo_kernel.f90	\
+	update_tile_halo.f90		\
 	update_halo_kernel.f90		\
 	update_halo.f90			\
 	ideal_gas_kernel.f90		\

@@ -43,7 +43,9 @@ void revert_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   int j,k;
   
- {
+
+
+
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
@@ -51,6 +53,7 @@ void revert_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
   
+
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
@@ -58,6 +61,6 @@ void revert_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
- }
+
 
 }

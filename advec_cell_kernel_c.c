@@ -65,10 +65,11 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   one_by_six=1.0/6.0;
 
- {
+
   if(dir==g_xdir){
 
     if(sweep_number==1){
+
       for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
         for (j=x_min-2;j<=x_max+2;j++) {
@@ -86,6 +87,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
     }
     else {
+
       for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
         for (j=x_min-2;j<=x_max+2;j++) {
@@ -97,6 +99,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
       }
 
     }
+
     for (k=y_min;k<=y_max;k++) {
       for (j=x_min;j<=x_max+2;j++) {
 
@@ -149,6 +152,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
       }
     }
     
+
     for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
      for (j=x_min;j<=x_max;j++) {
@@ -176,6 +180,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
     if(sweep_number==1){
       
+
       for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
         for (j=x_min-2;j<=x_max+2;j++) {
@@ -194,6 +199,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
     else {
 
+
       for (k=y_min-2;k<=y_max+2;k++) {
 #pragma ivdep
         for (j=x_min-2;j<=x_max+2;j++) {
@@ -206,6 +212,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
     }
     
+
     for (k=y_min;k<=y_max+2;k++) {
       for (j=x_min;j<=x_max;j++) {
 
@@ -259,6 +266,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
       }
     }
     
+
     for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
       for (j=x_min;j<=x_max;j++) {
@@ -283,7 +291,7 @@ void advec_cell_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   }
 
- }
+
 
 }
 

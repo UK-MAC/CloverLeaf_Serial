@@ -45,7 +45,9 @@ void flux_calc_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
 
   int j,k;
   
- {
+
+
+
 
   for (k=y_min;k<=y_max;k++) {
 #pragma ivdep
@@ -58,6 +60,7 @@ void flux_calc_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
+
   for (k=y_min;k<=y_max+1;k++) {
 #pragma ivdep
     for (j=x_min;j<=x_max;j++) {
@@ -69,6 +72,6 @@ void flux_calc_kernel_c_(int *xmin,int *xmax,int *ymin,int *ymax,
     }
   }
 
- }
+
 
 }
